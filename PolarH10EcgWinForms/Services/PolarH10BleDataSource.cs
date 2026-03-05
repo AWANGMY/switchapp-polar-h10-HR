@@ -51,7 +51,7 @@ namespace PolarH10EcgWinForms.Services
             IsConnected = true;
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(int sampleRateHz, CancellationToken cancellationToken)
         {
             ThrowIfDisposed();
             if (!IsConnected)
@@ -64,7 +64,7 @@ namespace PolarH10EcgWinForms.Services
                 return;
             }
 
-            await WriteControlPointAsync(PmdProtocol.BuildStartEcgCommand()).ConfigureAwait(false);
+            await WriteControlPointAsync(PmdProtocol.BuildStartEcgCommand(sampleRateHz)).ConfigureAwait(false);
             IsStreaming = true;
         }
 

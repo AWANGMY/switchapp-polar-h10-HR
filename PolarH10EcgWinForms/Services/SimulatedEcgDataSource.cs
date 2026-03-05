@@ -8,10 +8,14 @@ namespace PolarH10EcgWinForms.Services
 {
     public sealed class SimulatedEcgDataSource : IEcgDataSource, IDisposable
     {
+        private const int TickIntervalMs = 20;
+
         private readonly object _gate = new object();
         private readonly Random _random = new Random();
         private Timer _timer;
         private double _timeSeconds;
+        private double _sampleCarry;
+        private int _sampleRateHz = 130;
         private bool _disposed;
 
         public event EventHandler<EcgSamplesEventArgs> SamplesReceived;
@@ -27,7 +31,7 @@ namespace PolarH10EcgWinForms.Services
             return Task.CompletedTask;
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public Task StartAsync(int sampleRateHz, CancellationToken cancellationToken)
         {
             ThrowIfDisposed();
             if (!IsConnected)
@@ -40,7 +44,9 @@ namespace PolarH10EcgWinForms.Services
                 return Task.CompletedTask;
             }
 
-            _timer = new Timer(EmitSamples, null, 0, 40);
+            _sampleRateHz = sampleRateHz > 0 ? sampleRateHz : 130;
+            _sampleCarry = 0;
+            _timer = new Timer(EmitSamples, null, 0, TickIntervalMs);
             IsStreaming = true;
             return Task.CompletedTask;
         }
@@ -75,13 +81,21 @@ namespace PolarH10EcgWinForms.Services
 
         private void EmitSamples(object state)
         {
-            const double sampleRate = 130.0;
-            const int sampleCountPerTick = 5;
-            var samples = new List<double>(sampleCountPerTick);
+            List<double> samples;
 
             lock (_gate)
             {
-                for (int i = 0; i < sampleCountPerTick; i++)
+                _sampleCarry += (_sampleRateHz * TickIntervalMs) / 1000.0;
+                int sampleCount = (int)_sampleCarry;
+                if (sampleCount <= 0)
+                {
+                    return;
+                }
+
+                _sampleCarry -= sampleCount;
+                samples = new List<double>(sampleCount);
+
+                for (int i = 0; i < sampleCount; i++)
                 {
                     double heartCycle = _timeSeconds % 1.0;
                     double baselineMv = 0.10 * Math.Sin(2.0 * Math.PI * 1.2 * _timeSeconds);
@@ -90,7 +104,7 @@ namespace PolarH10EcgWinForms.Services
                     double sampleUv = (baselineMv + qrsSpikeMv + noiseMv) * 1000.0;
 
                     samples.Add(sampleUv);
-                    _timeSeconds += 1.0 / sampleRate;
+                    _timeSeconds += 1.0 / _sampleRateHz;
                 }
             }
 

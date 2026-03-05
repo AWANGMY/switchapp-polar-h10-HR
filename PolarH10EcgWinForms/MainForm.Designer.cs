@@ -11,6 +11,8 @@ namespace PolarH10EcgWinForms
         private Panel topPanel;
         private Label lblDeviceFilter;
         private TextBox txtDeviceFilter;
+        private Label lblSampleRate;
+        private ComboBox cmbSampleRate;
         private CheckBox chkSimulation;
         private Button btnConnect;
         private Button btnStart;
@@ -47,6 +49,8 @@ namespace PolarH10EcgWinForms
             this.btnStart = new Button();
             this.btnConnect = new Button();
             this.chkSimulation = new CheckBox();
+            this.cmbSampleRate = new ComboBox();
+            this.lblSampleRate = new Label();
             this.txtDeviceFilter = new TextBox();
             this.lblDeviceFilter = new Label();
             this.chartEcg = new Chart();
@@ -68,6 +72,8 @@ namespace PolarH10EcgWinForms
             this.topPanel.Controls.Add(this.btnStart);
             this.topPanel.Controls.Add(this.btnConnect);
             this.topPanel.Controls.Add(this.chkSimulation);
+            this.topPanel.Controls.Add(this.cmbSampleRate);
+            this.topPanel.Controls.Add(this.lblSampleRate);
             this.topPanel.Controls.Add(this.txtDeviceFilter);
             this.topPanel.Controls.Add(this.lblDeviceFilter);
             this.topPanel.Dock = DockStyle.Top;
@@ -78,40 +84,40 @@ namespace PolarH10EcgWinForms
             // 
             // btnExport
             // 
-            this.btnExport.Location = new System.Drawing.Point(450, 40);
+            this.btnExport.Location = new System.Drawing.Point(408, 40);
             this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(84, 24);
-            this.btnExport.TabIndex = 8;
+            this.btnExport.Size = new System.Drawing.Size(96, 24);
+            this.btnExport.TabIndex = 10;
             this.btnExport.Text = "Export CSV";
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new EventHandler(this.btnExport_Click);
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(360, 40);
+            this.btnClear.Location = new System.Drawing.Point(330, 40);
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(84, 24);
-            this.btnClear.TabIndex = 7;
+            this.btnClear.Size = new System.Drawing.Size(72, 24);
+            this.btnClear.TabIndex = 9;
             this.btnClear.Text = "Clear";
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new EventHandler(this.btnClear_Click);
             // 
             // btnDisconnect
             // 
-            this.btnDisconnect.Location = new System.Drawing.Point(270, 40);
+            this.btnDisconnect.Location = new System.Drawing.Point(246, 40);
             this.btnDisconnect.Name = "btnDisconnect";
-            this.btnDisconnect.Size = new System.Drawing.Size(84, 24);
-            this.btnDisconnect.TabIndex = 6;
+            this.btnDisconnect.Size = new System.Drawing.Size(78, 24);
+            this.btnDisconnect.TabIndex = 8;
             this.btnDisconnect.Text = "Disconnect";
             this.btnDisconnect.UseVisualStyleBackColor = true;
             this.btnDisconnect.Click += new EventHandler(this.btnDisconnect_Click);
             // 
             // btnStop
             // 
-            this.btnStop.Location = new System.Drawing.Point(180, 40);
+            this.btnStop.Location = new System.Drawing.Point(168, 40);
             this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(84, 24);
-            this.btnStop.TabIndex = 5;
+            this.btnStop.Size = new System.Drawing.Size(72, 24);
+            this.btnStop.TabIndex = 7;
             this.btnStop.Text = "Stop";
             this.btnStop.UseVisualStyleBackColor = true;
             this.btnStop.Click += new EventHandler(this.btnStop_Click);
@@ -120,8 +126,8 @@ namespace PolarH10EcgWinForms
             // 
             this.btnStart.Location = new System.Drawing.Point(90, 40);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(84, 24);
-            this.btnStart.TabIndex = 4;
+            this.btnStart.Size = new System.Drawing.Size(72, 24);
+            this.btnStart.TabIndex = 6;
             this.btnStart.Text = "Start";
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new EventHandler(this.btnStart_Click);
@@ -131,7 +137,7 @@ namespace PolarH10EcgWinForms
             this.btnConnect.Location = new System.Drawing.Point(12, 40);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(72, 24);
-            this.btnConnect.TabIndex = 3;
+            this.btnConnect.TabIndex = 5;
             this.btnConnect.Text = "Connect";
             this.btnConnect.UseVisualStyleBackColor = true;
             this.btnConnect.Click += new EventHandler(this.btnConnect_Click);
@@ -139,18 +145,40 @@ namespace PolarH10EcgWinForms
             // chkSimulation
             // 
             this.chkSimulation.AutoSize = true;
-            this.chkSimulation.Location = new System.Drawing.Point(282, 13);
+            this.chkSimulation.Location = new System.Drawing.Point(504, 12);
             this.chkSimulation.Name = "chkSimulation";
-            this.chkSimulation.Size = new System.Drawing.Size(104, 19);
-            this.chkSimulation.TabIndex = 2;
+            this.chkSimulation.Size = new System.Drawing.Size(194, 19);
+            this.chkSimulation.TabIndex = 4;
             this.chkSimulation.Text = "Simulation mode (no device)";
             this.chkSimulation.UseVisualStyleBackColor = true;
+            // 
+            // cmbSampleRate
+            // 
+            this.cmbSampleRate.DropDownStyle = ComboBoxStyle.DropDownList;
+            this.cmbSampleRate.FormattingEnabled = true;
+            this.cmbSampleRate.Items.AddRange(new object[] {
+            "130",
+            "200",
+            "260"});
+            this.cmbSampleRate.Location = new System.Drawing.Point(388, 9);
+            this.cmbSampleRate.Name = "cmbSampleRate";
+            this.cmbSampleRate.Size = new System.Drawing.Size(96, 23);
+            this.cmbSampleRate.TabIndex = 3;
+            // 
+            // lblSampleRate
+            // 
+            this.lblSampleRate.AutoSize = true;
+            this.lblSampleRate.Location = new System.Drawing.Point(293, 13);
+            this.lblSampleRate.Name = "lblSampleRate";
+            this.lblSampleRate.Size = new System.Drawing.Size(89, 15);
+            this.lblSampleRate.TabIndex = 2;
+            this.lblSampleRate.Text = "Sample Hz:";
             // 
             // txtDeviceFilter
             // 
             this.txtDeviceFilter.Location = new System.Drawing.Point(103, 10);
             this.txtDeviceFilter.Name = "txtDeviceFilter";
-            this.txtDeviceFilter.Size = new System.Drawing.Size(160, 23);
+            this.txtDeviceFilter.Size = new System.Drawing.Size(170, 23);
             this.txtDeviceFilter.TabIndex = 1;
             this.txtDeviceFilter.Text = "Polar H10";
             // 
@@ -234,4 +262,3 @@ namespace PolarH10EcgWinForms
         }
     }
 }
-

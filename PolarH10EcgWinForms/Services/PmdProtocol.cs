@@ -13,14 +13,17 @@ namespace PolarH10EcgWinForms.Services
         private const byte RequestStopMeasurement = 0x03;
         private const byte MeasurementTypeEcg = 0x00;
 
-        public static byte[] BuildStartEcgCommand()
+        public static byte[] BuildStartEcgCommand(int sampleRateHz)
         {
+            ushort rate = (ushort)Math.Max(1, Math.Min(sampleRateHz, 1000));
+            const ushort resolutionBits = 14;
+
             return new byte[]
             {
                 RequestStartMeasurement,
                 MeasurementTypeEcg,
-                0x00, 0x01, 0x82, 0x00,
-                0x01, 0x01, 0x0E, 0x00
+                0x00, 0x01, (byte)(rate & 0xFF), (byte)(rate >> 8),
+                0x01, 0x01, (byte)(resolutionBits & 0xFF), (byte)(resolutionBits >> 8)
             };
         }
 

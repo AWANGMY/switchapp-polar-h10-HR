@@ -25,6 +25,7 @@ namespace PolarH10EcgWinForms
         {
             InitializeComponent();
             chkSimulation.Checked = false;
+            cmbSampleRate.SelectedIndex = 0;
             ConfigureChart();
             UpdateUiState();
             AppendLog("App started. Default mode is real Polar H10 connection.");
@@ -44,8 +45,16 @@ namespace PolarH10EcgWinForms
                 AppendLog("Connecting to data source...");
                 await _dataSource.ConnectAsync(txtDeviceFilter.Text.Trim(), CancellationToken.None).ConfigureAwait(true);
 
-                SetStatus("Connected");
-                AppendLog("Connected.");
+                if (chkSimulation.Checked)
+                {
+                    SetStatus("Connected (Simulation)");
+                    AppendLog("Connected in simulation mode (no physical device).");
+                }
+                else
+                {
+                    SetStatus("Connected (Polar H10)");
+                    AppendLog("Connected to Polar H10 device.");
+                }
             }
             catch (Exception ex)
             {
@@ -69,6 +78,8 @@ namespace PolarH10EcgWinForms
             btnStart.Enabled = false;
             try
             {
+                int sampleRateHz = GetSelectedSampleRateHz();
+
                 ClearChart();
                 lock (_captureGate)
                 {
@@ -76,9 +87,11 @@ namespace PolarH10EcgWinForms
                     _capturedRows.Add("timestamp_utc,sample_index,ecg_uV");
                 }
 
-                await _dataSource.StartAsync(CancellationToken.None).ConfigureAwait(true);
-                SetStatus("Streaming");
-                AppendLog("ECG streaming started.");
+                await _dataSource.StartAsync(sampleRateHz, CancellationToken.None).ConfigureAwait(true);
+                SetStatus(chkSimulation.Checked
+                    ? $"Streaming (Simulation, {sampleRateHz} Hz)"
+                    : $"Streaming (Polar H10, {sampleRateHz} Hz)");
+                AppendLog($"ECG streaming started at {sampleRateHz} Hz.");
             }
             catch (Exception ex)
             {
@@ -101,7 +114,7 @@ namespace PolarH10EcgWinForms
             try
             {
                 await _dataSource.StopAsync(CancellationToken.None).ConfigureAwait(true);
-                SetStatus("Connected");
+                SetStatus(chkSimulation.Checked ? "Connected (Simulation)" : "Connected (Polar H10)");
                 AppendLog("ECG streaming stopped.");
             }
             catch (Exception ex)
@@ -182,6 +195,23 @@ namespace PolarH10EcgWinForms
             return chkSimulation.Checked
                 ? (IEcgDataSource)new SimulatedEcgDataSource()
                 : new PolarH10BleDataSource();
+        }
+
+        private int GetSelectedSampleRateHz()
+        {
+            if (cmbSampleRate.SelectedItem != null &&
+                int.TryParse(cmbSampleRate.SelectedItem.ToString(), out int selectedHz) &&
+                selectedHz > 0)
+            {
+                return selectedHz;
+            }
+
+            if (int.TryParse(cmbSampleRate.Text, out int typedHz) && typedHz > 0)
+            {
+                return typedHz;
+            }
+
+            return 130;
         }
 
         private async Task ResetDataSourceAsync()
@@ -289,6 +319,7 @@ namespace PolarH10EcgWinForms
             btnExport.Enabled = hasCapturedData;
             chkSimulation.Enabled = !connected;
             txtDeviceFilter.Enabled = !connected;
+            cmbSampleRate.Enabled = !connected;
         }
 
         private void SetStatus(string message)
@@ -302,4 +333,3 @@ namespace PolarH10EcgWinForms
         }
     }
 }
-

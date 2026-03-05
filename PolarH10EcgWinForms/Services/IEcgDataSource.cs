@@ -15,7 +15,7 @@ namespace PolarH10EcgWinForms.Services
 
         Task ConnectAsync(string deviceNameFilter, CancellationToken cancellationToken);
 
-        Task StartAsync(CancellationToken cancellationToken);
+        Task StartAsync(int sampleRateHz, CancellationToken cancellationToken);
 
         Task StopAsync(CancellationToken cancellationToken);
 
