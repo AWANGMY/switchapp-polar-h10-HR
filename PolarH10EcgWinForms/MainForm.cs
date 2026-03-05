@@ -25,7 +25,7 @@ namespace PolarH10EcgWinForms
         {
             InitializeComponent();
             chkSimulation.Checked = false;
-            cmbSampleRate.Text = "130";
+            cmbSampleRate.Text = "120";
             ConfigureChart();
             UpdateUiState();
             AppendLog("App started. Default mode is real Polar H10 connection.");
@@ -332,4 +332,5 @@ namespace PolarH10EcgWinForms
         }
     }
 }
+
 

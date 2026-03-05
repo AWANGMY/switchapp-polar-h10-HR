@@ -8,7 +8,7 @@ This repository contains a Visual Studio 2022 WinForms app that matches the assi
 - GUI with Connect / Start / Stop / Disconnect
 - Real-time ECG chart display
 - ECG collection and CSV export
-- Customizable sampling frequency (preset 130 / 200 / 260 Hz or manual input)
+- Customizable sampling frequency (preset 30 / 60 / 120 Hz or manual input)
 - Data source abstraction with Polar H10 BLE path and simulation mode
 
 ## Screenshot
@@ -43,4 +43,5 @@ This repository contains a Visual Studio 2022 WinForms app that matches the assi
 - BLE ECG uses Polar PMD service UUIDs and control/data characteristics in `Services/PmdProtocol.cs`.
 - If your Windows environment blocks BLE discovery or GATT access, run Visual Studio as administrator and confirm Bluetooth permissions.
 - If a selected frequency is unsupported by device firmware, start may fail and you can retry with another frequency.
+
 

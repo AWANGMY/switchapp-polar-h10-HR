@@ -157,9 +157,9 @@ namespace PolarH10EcgWinForms
             this.cmbSampleRate.DropDownStyle = ComboBoxStyle.DropDown;
             this.cmbSampleRate.FormattingEnabled = true;
             this.cmbSampleRate.Items.AddRange(new object[] {
-            "130",
-            "200",
-            "260"});
+            "30",
+            "60",
+            "120"});
             this.cmbSampleRate.Location = new System.Drawing.Point(388, 9);
             this.cmbSampleRate.MaxLength = 4;
             this.cmbSampleRate.Name = "cmbSampleRate";
@@ -263,5 +263,7 @@ namespace PolarH10EcgWinForms
         }
     }
 }
+
+
 
 
