@@ -32,8 +32,3 @@ This repository contains a Visual Studio 2022 WinForms app that matches the assi
 3. Ensure Bluetooth is enabled and the strap is worn (electrodes wet).
 4. Click `Connect`, then `Start`.
 
-## Notes
-
-- BLE ECG uses Polar PMD service UUIDs and control/data characteristics in `Services/PmdProtocol.cs`.
-- If your Windows environment blocks BLE discovery or GATT access, run Visual Studio as administrator and confirm Bluetooth permissions.
-- Build validation in this environment failed because `Microsoft.NET.Sdk.WindowsDesktop` is not installed locally.
