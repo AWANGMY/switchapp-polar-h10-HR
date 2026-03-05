@@ -25,7 +25,7 @@ namespace PolarH10EcgWinForms
         {
             InitializeComponent();
             chkSimulation.Checked = false;
-            cmbSampleRate.SelectedIndex = 0;
+            cmbSampleRate.Text = "130";
             ConfigureChart();
             UpdateUiState();
             AppendLog("App started. Default mode is real Polar H10 connection.");
@@ -199,19 +199,18 @@ namespace PolarH10EcgWinForms
 
         private int GetSelectedSampleRateHz()
         {
-            if (cmbSampleRate.SelectedItem != null &&
-                int.TryParse(cmbSampleRate.SelectedItem.ToString(), out int selectedHz) &&
-                selectedHz > 0)
+            string input = cmbSampleRate.Text?.Trim();
+            if (!int.TryParse(input, out int sampleRateHz))
             {
-                return selectedHz;
+                throw new InvalidOperationException("Sample Hz must be an integer value.");
             }
 
-            if (int.TryParse(cmbSampleRate.Text, out int typedHz) && typedHz > 0)
+            if (sampleRateHz < 1 || sampleRateHz > 1000)
             {
-                return typedHz;
+                throw new InvalidOperationException("Sample Hz must be between 1 and 1000.");
             }
 
-            return 130;
+            return sampleRateHz;
         }
 
         private async Task ResetDataSourceAsync()
@@ -333,3 +332,4 @@ namespace PolarH10EcgWinForms
         }
     }
 }
+

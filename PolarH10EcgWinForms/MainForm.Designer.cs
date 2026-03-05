@@ -154,13 +154,14 @@ namespace PolarH10EcgWinForms
             // 
             // cmbSampleRate
             // 
-            this.cmbSampleRate.DropDownStyle = ComboBoxStyle.DropDownList;
+            this.cmbSampleRate.DropDownStyle = ComboBoxStyle.DropDown;
             this.cmbSampleRate.FormattingEnabled = true;
             this.cmbSampleRate.Items.AddRange(new object[] {
             "130",
             "200",
             "260"});
             this.cmbSampleRate.Location = new System.Drawing.Point(388, 9);
+            this.cmbSampleRate.MaxLength = 4;
             this.cmbSampleRate.Name = "cmbSampleRate";
             this.cmbSampleRate.Size = new System.Drawing.Size(96, 23);
             this.cmbSampleRate.TabIndex = 3;
@@ -262,3 +263,5 @@ namespace PolarH10EcgWinForms
         }
     }
 }
+
+
