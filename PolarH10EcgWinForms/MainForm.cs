@@ -20,12 +20,13 @@ namespace PolarH10EcgWinForms
         private readonly List<string> _capturedRows = new List<string>();
         private IEcgDataSource _dataSource;
         private int _sampleIndex;
+        private int _currentSampleRateHz = 130;
 
         public MainForm()
         {
             InitializeComponent();
             chkSimulation.Checked = false;
-            cmbSampleRate.Text = "120";
+            cmbSampleRate.Text = "130";
             ConfigureChart();
             UpdateUiState();
             AppendLog("App started. Default mode is real Polar H10 connection.");
@@ -84,9 +85,10 @@ namespace PolarH10EcgWinForms
                 lock (_captureGate)
                 {
                     _capturedRows.Clear();
-                    _capturedRows.Add("timestamp_utc,sample_index,ecg_uV");
+                    _capturedRows.Add("time,data");
                 }
 
+                _currentSampleRateHz = sampleRateHz;
                 await _dataSource.StartAsync(sampleRateHz, CancellationToken.None).ConfigureAwait(true);
                 SetStatus(chkSimulation.Checked
                     ? $"Streaming (Simulation, {sampleRateHz} Hz)"
@@ -260,9 +262,8 @@ namespace PolarH10EcgWinForms
 
                     _capturedRows.Add(string.Format(
                         CultureInfo.InvariantCulture,
-                        "{0:o},{1},{2:F3}",
-                        e.TimestampUtc,
-                        index,
+                        "{0:F6},{1:F3}",
+                        index / (double)Math.Max(1, _currentSampleRateHz),
                         sampleUv));
                 }
             }
@@ -332,5 +333,4 @@ namespace PolarH10EcgWinForms
         }
     }
 }
-
 

@@ -159,7 +159,7 @@ namespace PolarH10EcgWinForms
             this.cmbSampleRate.Items.AddRange(new object[] {
             "30",
             "60",
-            "120"});
+            "130"});
             this.cmbSampleRate.Location = new System.Drawing.Point(388, 9);
             this.cmbSampleRate.MaxLength = 4;
             this.cmbSampleRate.Name = "cmbSampleRate";
@@ -263,7 +263,4 @@ namespace PolarH10EcgWinForms
         }
     }
 }
-
-
-
 
