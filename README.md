@@ -14,7 +14,7 @@ This repository contains a Visual Studio 2022 WinForms desktop app for Polar H10
 
 ## Screenshot
 
-![App Screenshot](docs/app-screenshot.png)
+![App Screenshot](docs/screenshot.png)
 
 ## Open and run
 
@@ -48,3 +48,4 @@ This repository contains a Visual Studio 2022 WinForms desktop app for Polar H10
 - Make sure no other app (Polar Beat/Flow, watch app, phone settings page) is actively holding the H10 BLE connection.
 - Keep the strap worn and awake when pressing `Connect`.
 - If connection fails, disconnect/reconnect and retry.
+
