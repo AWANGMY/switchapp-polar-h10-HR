@@ -1,15 +1,16 @@
-﻿# Polar H10 ECG WinForms (C# .NET Framework 4.7.2)
+# Polar H10 Heart Rate WinForms (C# .NET Framework 4.7.2)
 
-This repository contains a Visual Studio 2022 WinForms app that matches the assignment requirements:
+This repository contains a Visual Studio 2022 WinForms desktop app for Polar H10 heart rate monitoring.
+
+## Features
 
 - C# WinForms desktop app
 - Target framework: .NET Framework 4.7.2
-- Output type: Windows Application
-- GUI with Connect / Start / Stop / Disconnect
-- Real-time ECG chart display
-- ECG collection and CSV export
-- Customizable sampling frequency (preset 30 / 60 / 130 Hz or manual input)
-- Data source abstraction with Polar H10 BLE path and simulation mode
+- Connect / Start / Stop / Disconnect workflow
+- Real-time heart rate chart (`bpm`)
+- CSV export (`time,bpm`)
+- Polar H10 BLE mode + simulation mode
+- Dynamic Y-axis scaling for heart rate display
 
 ## Screenshot
 
@@ -24,30 +25,26 @@ This repository contains a Visual Studio 2022 WinForms app that matches the assi
 
 ## App usage
 
-1. Set sample frequency in `Sample Hz` (pick preset or type custom 1-1000).
-2. Keep `Simulation mode (no device)` checked to demo without hardware.
+1. Keep `Simulation mode (no device)` checked to test without hardware, or uncheck to use Polar H10.
+2. Keep device filter as `Polar H10` (or set your strap name).
 3. Click `Connect`.
-4. Click `Start` to stream and plot real-time ECG waveform.
-5. Click `Stop` and then `Export CSV` to save collected data.
+4. Click `Start` to begin heart rate streaming.
+5. Click `Stop` and then `Export CSV` to save captured heart rate.
 6. Click `Disconnect` when done.
 
-## Use with Polar H10
+## BLE implementation notes
 
-1. Uncheck `Simulation mode (no device)`.
-2. Keep device filter as `Polar H10` (or update to your strap name).
-3. Select `130` in `Sample Hz` for best Polar H10 ECG compatibility.
-4. Ensure Bluetooth is enabled and the strap is worn (electrodes wet).
-5. Click `Connect`, then `Start`.
+- Real device mode uses standard BLE Heart Rate Service (`0x180D`) and Heart Rate Measurement characteristic (`0x2A37`).
+- Heart rate values are parsed from characteristic notifications and plotted directly in `bpm`.
+- Sampling is device-notification-driven (commonly around 1 Hz), not a PMD ECG stream.
 
-## Notes
+## Simulation mode
 
-- BLE ECG uses Polar PMD service UUIDs and control/data characteristics in `Services/PmdProtocol.cs`.
-- Connection and stream startup now follow the same PMD handshake style used by `polar-python`: subscribe PMD control notifications, query available features/settings, then send start command.
-- If your Windows environment blocks BLE discovery or GATT access, run Visual Studio as administrator and confirm Bluetooth permissions.
-- If a selected frequency is unsupported by device firmware, the app automatically negotiates to the nearest supported value returned by PMD settings.
+- Simulation emits one heart-rate sample per second.
+- Values follow a bounded random walk to mimic realistic resting HR variation.
 
-## Troubleshooting disconnect
+## Troubleshooting connection
 
 - Make sure no other app (Polar Beat/Flow, watch app, phone settings page) is actively holding the H10 BLE connection.
-- Keep the strap awake and in contact with skin (wet electrodes) while pressing `Connect`.
-- If log shows PMD control-point errors (e.g. INVALID_SAMPLE_RATE), retry with `130 Hz` and reconnect.
+- Keep the strap worn and awake when pressing `Connect`.
+- If connection fails, disconnect/reconnect and retry.

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,14 +8,12 @@ namespace PolarH10EcgWinForms.Services
 {
     public sealed class SimulatedEcgDataSource : IEcgDataSource, IDisposable
     {
-        private const int TickIntervalMs = 20;
+        private const int TickIntervalMs = 1000;
 
         private readonly object _gate = new object();
         private readonly Random _random = new Random();
         private Timer _timer;
-        private double _timeSeconds;
-        private double _sampleCarry;
-        private int _sampleRateHz = 130;
+        private double _currentBpm = 72.0;
         private bool _disposed;
 
         public event EventHandler<EcgSamplesEventArgs> SamplesReceived;
@@ -44,8 +42,6 @@ namespace PolarH10EcgWinForms.Services
                 return Task.CompletedTask;
             }
 
-            _sampleRateHz = sampleRateHz > 0 ? sampleRateHz : 130;
-            _sampleCarry = 0;
             _timer = new Timer(EmitSamples, null, 0, TickIntervalMs);
             IsStreaming = true;
             return Task.CompletedTask;
@@ -81,34 +77,16 @@ namespace PolarH10EcgWinForms.Services
 
         private void EmitSamples(object state)
         {
-            List<double> samples;
-
+            double bpm;
             lock (_gate)
             {
-                _sampleCarry += (_sampleRateHz * TickIntervalMs) / 1000.0;
-                int sampleCount = (int)_sampleCarry;
-                if (sampleCount <= 0)
-                {
-                    return;
-                }
-
-                _sampleCarry -= sampleCount;
-                samples = new List<double>(sampleCount);
-
-                for (int i = 0; i < sampleCount; i++)
-                {
-                    double heartCycle = _timeSeconds % 1.0;
-                    double baselineMv = 0.10 * Math.Sin(2.0 * Math.PI * 1.2 * _timeSeconds);
-                    double qrsSpikeMv = heartCycle < 0.03 ? 1.2 * Math.Exp(-220.0 * heartCycle) : 0.0;
-                    double noiseMv = (_random.NextDouble() - 0.5) * 0.04;
-                    double sampleUv = (baselineMv + qrsSpikeMv + noiseMv) * 1000.0;
-
-                    samples.Add(sampleUv);
-                    _timeSeconds += 1.0 / _sampleRateHz;
-                }
+                // Slow random walk to mimic realistic resting HR variation.
+                double delta = (_random.NextDouble() - 0.5) * 4.0;
+                _currentBpm = Math.Max(45.0, Math.Min(180.0, _currentBpm + delta));
+                bpm = Math.Round(_currentBpm, 1);
             }
 
-            SamplesReceived?.Invoke(this, new EcgSamplesEventArgs(DateTime.UtcNow, samples));
+            SamplesReceived?.Invoke(this, new EcgSamplesEventArgs(DateTime.UtcNow, new List<double> { bpm }));
         }
 
         private void ThrowIfDisposed()

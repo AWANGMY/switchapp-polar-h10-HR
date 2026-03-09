@@ -27,7 +27,7 @@ namespace PolarH10EcgWinForms.Services
 
         public static byte[] BuildGetEcgSettingsCommand()
         {
-            return new[]
+            return new byte[]
             {
                 RequestGetMeasurementSettings,
                 MeasurementTypeEcg
@@ -39,7 +39,7 @@ namespace PolarH10EcgWinForms.Services
             ushort rate = (ushort)Math.Max(1, Math.Min(sampleRateHz, 1000));
             ushort resolution = (ushort)Math.Max(1, Math.Min(resolutionBits, 32));
 
-            return new[]
+            return new byte[]
             {
                 RequestStartMeasurement,
                 MeasurementTypeEcg,
@@ -50,7 +50,7 @@ namespace PolarH10EcgWinForms.Services
 
         public static byte[] BuildStopEcgCommand()
         {
-            return new[]
+            return new byte[]
             {
                 RequestStopMeasurement,
                 MeasurementTypeEcg

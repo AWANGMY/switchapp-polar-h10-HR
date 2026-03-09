@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -251,7 +251,7 @@ namespace PolarH10EcgWinForms
             this.Controls.Add(this.topPanel);
             this.Name = "MainForm";
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.Text = "Polar H10 ECG Monitor";
+            this.Text = "Polar H10 Heart Rate Monitor";
             this.FormClosing += new FormClosingEventHandler(this.MainForm_FormClosing);
             this.topPanel.ResumeLayout(false);
             this.topPanel.PerformLayout();
@@ -263,4 +263,5 @@ namespace PolarH10EcgWinForms
         }
     }
 }
+
 
