@@ -22,6 +22,7 @@ namespace PolarH10EcgWinForms
 
         private readonly object _captureGate = new object();
         private readonly List<string> _capturedRows = new List<string>();
+        private readonly string _csvDelimiter = CultureInfo.CurrentCulture.TextInfo.ListSeparator;
         private IEcgDataSource _dataSource;
         private int _sampleIndex;
         private DateTime? _streamStartUtc;
@@ -90,7 +91,7 @@ namespace PolarH10EcgWinForms
                 lock (_captureGate)
                 {
                     _capturedRows.Clear();
-                    _capturedRows.Add("time,bpm");
+                    _capturedRows.Add(string.Format(CultureInfo.InvariantCulture, "time{0}bpm", _csvDelimiter));
                 }
 
                 await _dataSource.StartAsync(1, CancellationToken.None).ConfigureAwait(true);
@@ -253,9 +254,10 @@ namespace PolarH10EcgWinForms
                     double elapsedSeconds = (e.TimestampUtc - _streamStartUtc.Value).TotalSeconds;
                     _capturedRows.Add(string.Format(
                         CultureInfo.InvariantCulture,
-                        "{0:F3},{1:F1}",
+                        "{0:F3}{2}{1:F1}",
                         elapsedSeconds,
-                        bpm));
+                        bpm,
+                        _csvDelimiter));
                 }
             }
 
