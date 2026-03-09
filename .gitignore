@@ -22,3 +22,6 @@ UpgradeLog*.htm
 # OS files
 Thumbs.db
 Desktop.ini
+.dotnet/
+_tmp_polar_python_ref/
+
